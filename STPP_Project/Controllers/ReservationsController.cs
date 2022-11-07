@@ -2,6 +2,10 @@
 using STPP_Project.Data.Entities;
 using STPP_Project.Data.Dtos.Reservations;
 using STPP_Project.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using STPP_Project.Auth.Model;
+using System.Security.Claims;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace STPP_Project.Controllers
 {
@@ -12,11 +16,13 @@ namespace STPP_Project.Controllers
         private readonly IReservationsRepository _reservationsRepository;
         private readonly IAccommodationAdsRepository _accommodationAdsRepository;
         private readonly ICitiesRepository _citiesRepository;
-        public ReservationsController(IReservationsRepository reservationsRepository, IAccommodationAdsRepository accommodationAdsRepository, ICitiesRepository citiesRepository)
+        private readonly IAuthorizationService _authorizationService;
+        public ReservationsController(IReservationsRepository reservationsRepository, IAccommodationAdsRepository accommodationAdsRepository, ICitiesRepository citiesRepository, IAuthorizationService authorizationService)
         {
             _reservationsRepository = reservationsRepository;
             _accommodationAdsRepository = accommodationAdsRepository;
             _citiesRepository = citiesRepository;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -52,6 +58,7 @@ namespace STPP_Project.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = ProjectRoles.RegisteredUser + ", " + ProjectRoles.Admin)]
         public async Task<ActionResult<ReservationDto>> Create(int cityId, int accommodationAdId, CreateReservationDto createReservationDto)
         {
             var city = await _citiesRepository.GetAsync(cityId);
@@ -71,7 +78,8 @@ namespace STPP_Project.Controllers
                 GuestCount = createReservationDto.GuestCount,
                 StartDate = createReservationDto.StartDate,
                 EndDate = createReservationDto.EndDate,
-                AccommodationAd = accommodationAd
+                AccommodationAd = accommodationAd,
+                UserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
 
             await _reservationsRepository.CreateAsync(reservation);
@@ -81,6 +89,7 @@ namespace STPP_Project.Controllers
 
         [HttpPut]
         [Route("{reservationId}")]
+        [Authorize(Roles = ProjectRoles.RegisteredUser + ", " + ProjectRoles.Admin)]
         public async Task<ActionResult<ReservationDto>> Update(int cityId, int accommodationAdId, int reservationId, UpdateReservationDto updateReservationDto)
         {
             var city = await _citiesRepository.GetAsync(cityId);
@@ -101,6 +110,12 @@ namespace STPP_Project.Controllers
                 return NotFound($"Couldn't find a reservation with ID: {reservationId}");
             }
 
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, reservation, PolicyNames.ResourceOwner);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             reservation.StartDate = updateReservationDto.StartDate;
             reservation.EndDate = updateReservationDto.EndDate;
             await _reservationsRepository.UpdateAsync(reservation);
@@ -110,6 +125,7 @@ namespace STPP_Project.Controllers
 
         [HttpDelete]
         [Route("{reservationId}")]
+        [Authorize(Roles = ProjectRoles.RegisteredUser + ", " + ProjectRoles.Admin)]
         public async Task<ActionResult> Remove(int cityId, int accommodationAdId, int reservationId)
         {
             var city = await _citiesRepository.GetAsync(cityId);
@@ -129,6 +145,12 @@ namespace STPP_Project.Controllers
             if (reservation == null)
             {
                 return NotFound($"Couldn't find a reservation with ID: {reservationId}");
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, reservation, PolicyNames.ResourceOwner);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             await _reservationsRepository.DeleteAsync(reservation);

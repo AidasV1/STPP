@@ -3,6 +3,13 @@ using STPP_Project.Data.Entities;
 using STPP_Project.Data.Dtos.Cities;
 using STPP_Project.Data.Dtos.Reservations;
 using STPP_Project.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using STPP_Project.Auth.Model;
+using System.Security.Claims;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.EntityFrameworkCore;
+using STPP_Project.Data.Dtos;
+using STPP_Project.Auth;
 
 namespace STPP_Project.Controllers
 {
@@ -11,9 +18,11 @@ namespace STPP_Project.Controllers
     public class CitiesController : ControllerBase
     {
         private readonly ICitiesRepository _citiesRepository;
-        public CitiesController(ICitiesRepository citiesRepository)
+        private readonly IAuthorizationService _authorizationService;
+        public CitiesController(ICitiesRepository citiesRepository, IAuthorizationService authorizationService)
         {
             _citiesRepository = citiesRepository;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -48,12 +57,14 @@ namespace STPP_Project.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = ProjectRoles.Admin)]
         public async Task<ActionResult<CityDto>> Create(CreateCityDto createCityDto)
         {
             var city = new City
             {
                 Name = createCityDto.Name,
-                Description = createCityDto.Description
+                Description = createCityDto.Description,
+                UserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
 
             await _citiesRepository.CreateAsync(city);
@@ -63,10 +74,7 @@ namespace STPP_Project.Controllers
 
         [HttpPut]
         [Route("{cityId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = ProjectRoles.Admin)]
         public async Task<ActionResult<CityDto>> Update(int cityId, UpdateCityDto updateCityDto)
         {
             var city = await _citiesRepository.GetAsync(cityId);
@@ -74,6 +82,12 @@ namespace STPP_Project.Controllers
             if (city == null)
             {
                 return NotFound($"Couldn't find a city with ID: {cityId}");
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, city, PolicyNames.ResourceOwner);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             city.Description = updateCityDto.Description;
@@ -84,6 +98,7 @@ namespace STPP_Project.Controllers
 
         [HttpDelete]
         [Route("{cityId}")]
+        [Authorize(Roles = ProjectRoles.Admin)]
         public async Task<ActionResult> Remove(int cityId)
         {
             var city = await _citiesRepository.GetAsync(cityId);
@@ -91,6 +106,12 @@ namespace STPP_Project.Controllers
             if (city == null)
             {
                 return NotFound($"Couldn't find a city with ID: {cityId}");
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, city, PolicyNames.ResourceOwner);
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
 
             await _citiesRepository.DeleteAsync(city);
