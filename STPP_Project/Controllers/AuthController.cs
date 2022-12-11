@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using STPP_Project.Auth;
 using STPP_Project.Auth.Model;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace STPP_Project.Controllers
 {
@@ -58,6 +60,21 @@ namespace STPP_Project.Controllers
             var accessToken = _jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
 
             return Ok(new SuccessfulLoginDto(accessToken));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("logout")]
+        public async Task<IActionResult> LogOut()
+        {
+            ProjectRestUser projectRestUser = await _userManager.FindByIdAsync(User.FindFirstValue(JwtRegisteredClaimNames.Sub));
+            var jti = await _userManager.GetAuthenticationTokenAsync(projectRestUser, "JWT", "JWT Token");
+            if (jti != User.FindFirstValue(JwtRegisteredClaimNames.Jti))
+                return Unauthorized();
+
+            await _userManager.RemoveAuthenticationTokenAsync(projectRestUser, "JWT", "JWT Token");
+
+            return Ok();
         }
     }
 }

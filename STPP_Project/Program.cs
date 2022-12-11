@@ -47,9 +47,20 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, ResourceOwnerAuthorizationHandler>();
 
+builder.Services.AddCors(cr => {
+    cr.AddPolicy("allowAll", cp =>
+    {
+        //cp.WithOrigins("http://localhost:3000", "https://localhost:7108");
+        cp.AllowAnyOrigin();
+        cp.AllowAnyMethod();
+        cp.AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 app.UseRouting();
+app.UseCors("allowAll");
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
