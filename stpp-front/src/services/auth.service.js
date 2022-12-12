@@ -1,7 +1,7 @@
 import axios from "axios";
 
 //const API_URL = "https://stppapiapp.azurewebsites.net/";
-const API_URL = "https://stppapiapp.azurewebsites.net/api";
+const API_URL = "https://stppapiapp.azurewebsites.net/api/";
 
 class AuthService {
   login(username, password) {

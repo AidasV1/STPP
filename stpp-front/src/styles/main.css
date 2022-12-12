@@ -1,0 +1,39 @@
+/* edit */
+@import url('https://fonts.googleapis.com/css?family=Mukta');
+
+body, html {
+  font-family: 'Mukta';
+}
+
+.page-footer-fixed {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding-top: 20px;
+    color: #fff;
+    background-color: #ee6e73;
+  }
+  
+  .page-footer-bottom {
+    bottom: 0;
+    width: 100%;
+    padding-top: 20px;
+    color: #fff;
+    background-color: #ee6e73;
+  }
+  
+  .icon-block {
+    padding: 0 15px;
+  }
+  
+  .icon-block .material-icons {
+      font-size: inherit;
+  }
+  
+  .login-register-page {
+      display: inline-block;
+      padding: 32px 48px 0px 48px;
+      border: 1px solid #EEE;
+  }
+  /* edit */

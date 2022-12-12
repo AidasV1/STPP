@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextInput } from 'react-materialize';
 import 'materialize-css/dist/css/materialize.css'
+import "../styles/main.css";
 import { useForm } from "react-hook-form";
 
 function Register() {
@@ -22,7 +23,7 @@ const { register, handleSubmit, formState: { errors } } = useForm();
                 password
             })
         });
-        navigate("/login");
+        navigate("/api/login");
     }
 
     let html =

@@ -3,7 +3,7 @@ import AuthService from "../services/auth.service";
 import { withRouter } from './common/with-router';
 import { TextInput } from 'react-materialize';
 import 'materialize-css/dist/css/materialize.css'
-import backend, { replaceBackend } from "../components/backend/backend.tsx";
+import { replaceBackend } from "../components/backend/backend.tsx";
 import axios from "axios";
 import Form from "react-validation/build/form";
 import CheckButton from "react-validation/build/button";
@@ -143,7 +143,7 @@ class Login extends Component {
                                             {this.state.loading && (
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             )}
-                                            <span>Login</span>
+                                            <span>Prisijungti</span>
                                         </button>
                                     </div>
 

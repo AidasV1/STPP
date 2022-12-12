@@ -11,7 +11,7 @@ function Home() {
           <h5 class="header col s12 light">Tempor lacus aliquam class sapien per lacinia.</h5>
         </div>
         <div class="row center">
-          <a href="Listings" id="download-button" class="btn-large waves-effect waves-light blue">Ieškoti</a>
+          <a href="api/cities" id="download-button" class="btn-large waves-effect waves-light blue"><i class="material-icons right">search</i>Ieškoti</a>
         </div>
         <br/><br/>
       </div>
