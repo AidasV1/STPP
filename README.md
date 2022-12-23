@@ -37,11 +37,42 @@ Sistemos sudedamosios dalys:
 -	Kliento pusė (front-end) – realizuojama naudojant React.js;
 -	Serverio pusė (back-end) – realizuojama naudojant .NET Core 6. Duomenų bazė - MSSQL
 
-UML
+UML Deployment diagrama:
+
+![Screenshot_1](https://user-images.githubusercontent.com/79587813/209364599-17b3e381-873a-4b14-a812-93e6a311b0ec.png)
+
 
 <h1> Naudotojo sąsajos projektas </h1>
 
-img
+<h2> Prisijungimo langas </h2>
+
+<h3> Wireframe </h3>
+
+![Screenshot_4](https://user-images.githubusercontent.com/79587813/209365867-2f00dde1-30c8-409b-8eeb-be9297ecb157.png)
+
+<h3> Realizacijos iškarpa </h3>
+
+![Screenshot_1](https://user-images.githubusercontent.com/79587813/209364902-9faf86ac-1dc2-41c9-adf9-10c802f2f831.png)
+
+<h2> Registracijos langas </h2>
+
+<h3> Wireframe </h3>
+
+![Screenshot_5](https://user-images.githubusercontent.com/79587813/209366109-980f7a95-0c84-4ec6-b929-64462400a5fc.png)
+
+<h3> Realizacijos iškarpa </h3>
+
+![Screenshot_2](https://user-images.githubusercontent.com/79587813/209365208-37b61b4c-8666-4c93-9605-e13f77604352.png)
+
+<h2> Skelbimų sąrašo langas </h2>
+
+<h3> Wireframe </h3>
+
+![Screenshot_6](https://user-images.githubusercontent.com/79587813/209367958-ac6bb2e5-e4de-4864-958b-b0b6307856cc.png)
+
+<h3> Realizacijos iškarpa </h3>
+
+![Screenshot_3](https://user-images.githubusercontent.com/79587813/209365338-da52caef-e0a4-4de3-8108-b1f97da4d9d0.png)
 
 <h1> API specifikacija </h1>
 
@@ -618,4 +649,4 @@ POST /api/login
 
 <h1> Išvados </h1>
 
-asd
+Kuriant projektą buvo įgyta žinių apie RESTful API ir React karkasą, bei išmokta sukurti nedidelę programą jais pasinaudojant. Taip pat pavyko įgilinti žinias apie projekto talpinimą pasitelkiant debesų kompiuteriją.
